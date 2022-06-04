@@ -19,3 +19,21 @@ This project is may by only me during unit 3 of masai school.This is a weather f
 No contributors
 
 
+## API Reference
+
+### API used
+
+- [Open Weather API](https://openweathermap.org/api)
+- [Google Maps Embed API](https://developers.google.com/maps/documentation/embed/get-started)
+
+
+## Website Sneak Peaks
+
+- **Weather Image 1**
+
+![Weather Image 1](./snips/snip1.png?raw=true)
+
+- **Weather Image 2**
+
+![Weather Image 2](./snips/snip2.png)
+
