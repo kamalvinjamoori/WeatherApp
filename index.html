@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+
+        <script src="https://kit.fontawesome.com/3075c3c5e4.js" crossorigin="anonymous"></script>
+
+
+        <style>
+            * {
+
+                font-family: sans-serif;
+            }
+
+            body {
+                background-image: url("https://wallpapercave.com/wp/wp3006038.png");
+            }
+
+            /* #parent {} */
+
+            #main {
+                width: 98%;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+
+            }
+
+            #container {
+                width: 68%;
+                color: whitesmoke;
+
+            }
+
+            #flexd {
+                width: 100%;
+                /* border: 1px solid red; */
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #flexd1 {
+                width: 100%;
+                /* border: 1px solid red; */
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .mapouter {
+                position: relative;
+                text-align: right;
+                height: 200px;
+                width: 30%;
+            }
+
+            .gmap_canvas {
+                overflow: hidden;
+                background: none !important;
+                height: 500px;
+                width: 350px;
+            }
+
+            #cont2 {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+
+                gap: 20px;
+                margin-top: 20px;
+                border-top: 1px solid white;
+                padding-top: 20px;
+
+            }
+
+            i {
+                color: rgb(218, 218, 96);
+            }
+
+            h1 {
+                color: wheat;
+            }
+
+            p {
+                color: rgb(212, 171, 94);
+            }
+
+
+
+            @media all and (min-width:50px) and (max-width:600px) {
+
+
+                #main {
+                    width: 98%;
+                    margin: auto;
+                    display: block;
+
+                }
+
+                #container {
+                    width: 100%;
+                    color: white;
+
+                }
+
+                #flexd {
+                    width: 100%;
+                    /* border: 1px solid red; */
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                #flexd1 {
+                    width: 100%;
+                    /* border: 1px solid rgb(51, 255, 0); */
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                .mapouter {
+                    position: relative;
+                    text-align: right;
+                    height: 500px;
+                    width: 300px;
+                }
+
+                .gmap_canvas {
+                    overflow: hidden;
+                    background: none !important;
+                    height: 500px;
+                    width: 600px;
+                }
+
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="parent"><input type="text" name="" id="city" placeholder="Entrer any city/place">
+            <button id="button">Get weather</button>
+
+            <div id="main">
+
+                <div id="container">
+                    <div id="cont1"></div>
+                    <div id="cont2"></div>
+                </div>
+
+
+                <div class="mapouter">
+                    <div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" src="" frameborder="0"
+                            scrolling="no" marginheight="0" marginwidth="0"></iframe><a
+                            href="https://123movies-to.org">123movies</a><br>
+                        <a href="https://www.embedgooglemap.net">embed map in website</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+
+
+
+</html>
+
+<script>
+
+    document.querySelector("#button").addEventListener("click", showdata)
+
+
+    function showdata() {
+
+        let city = document.querySelector("#city").value
+        // console.log('city:', city)
+
+        myweather()
+        async function myweather() {
+
+
+            //apikey  ebdcf5496643b1fe78a59bf4d81300dc
+
+            //url api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+
+
+            try {
+
+                let data = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=ebdcf5496643b1fe78a59bf4d81300dc&units=metric`)
+
+                let weather = await data.json()
+
+
+                let lat = weather.coord.lat
+                // console.log('lat:', lat)
+                let lon = weather.coord.lon
+                // console.log('lon:', lon)
+
+
+                displayData(weather)
+                // console.log('weather:', weather)
+
+                let weekdata = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&appid=ebdcf5496643b1fe78a59bf4d81300dc&units=metric`)
+
+                let weekdata1 = await weekdata.json()
+                console.log('weekdata1:', weekdata1.daily)
+
+                let data1 = weekdata1.daily
+
+                displayData1(data1)
+
+
+            }
+
+            catch (err) {
+                document.querySelector("#cont1").innerHTML = ""
+
+                document.querySelector("#cont2").innerHTML = "City not found"
+                console.log('err:', "Not found")
+
+            }
+
+        }
+
+
+        function displayData(data) {
+
+            document.querySelector("#cont1").innerHTML = ""
+
+            let div = document.createElement("div")
+
+
+            let country = document.createElement("h2")
+            country.innerHTML = data.sys.country
+
+            let city = document.createElement("h2")
+            city.innerHTML = data.name
+
+            let min = document.createElement("h3")
+            min.innerHTML = "min-temp" + " " + ": " + data.main.temp_min + " " + "&#8451"
+
+            let max = document.createElement("h3")
+            max.innerHTML = "max-temp" + " " + ": " + data.main.temp_max + " " + "&#8451"
+
+            let temp = document.createElement("h1")
+            temp.innerHTML = "<i class='fa-solid fa-temperature-half'></i> " + data.main.temp + " " + "&#8451"
+
+            let wind = document.createElement("p")
+            wind.innerHTML = "wind-speed" + " " + ": " + data.wind.speed + " " + "kph"
+
+            let direction = document.createElement("p")
+            direction.innerHTML = "wind-direction" + " " + ":" + " " + data.wind.deg + "&#176" + " " + "N"
+
+            let pressure = document.createElement("p")
+            pressure.innerHTML = "Pressure" + " " + ":" + " " + data.main.pressure + " " + "kPa"
+
+            let humidity = document.createElement("p")
+            humidity.innerHTML = "Humidity" + " " + ":" + " " + data.main.humidity + "%"
+
+            let unixtime = new Date(data.sys.sunrise * 1000)
+            let hours = unixtime.getHours()
+            let minutes = unixtime.getMinutes()
+
+            let sunrise = document.createElement("p")
+            sunrise.innerHTML = "<i class='fa-solid fa-sun'></i> " + "<i class='fa-solid fa-arrow-up-long'></i> " + hours + ":" + minutes
+
+            let unixtime1 = new Date(data.sys.sunset * 1000)
+            let hours1 = unixtime1.getHours()
+            let minutes1 = unixtime1.getMinutes()
+
+            let sunset = document.createElement("p")
+            sunset.innerHTML = "<i class='fa-solid fa-sun'></i> " + "<i class='fa-solid fa-arrow-down-long'></i> " + hours1 + ":" + minutes1
+
+
+            iframe = document.querySelector("iframe")
+            iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+
+            let div1 = document.createElement("div")
+            let div2 = document.createElement("div")
+            let div3 = document.createElement("div")
+            let div4 = document.createElement("div")
+            let div5 = document.createElement("div")
+            let div6 = document.createElement("div")
+
+            div1.append(country, city, temp)
+            div2.append(min, max, wind, direction)
+            div4.append(div1, div2)
+            div4.id = "flexd"
+            div3.append(pressure, humidity)
+            div5.append(sunrise, sunset)
+            div6.append(div3, div5)
+            div6.id = "flexd1"
+
+
+            div.append(div4, div6)
+            // console.log('div:', div)
+
+            document.querySelector("#cont1").append(div)
+
+
+        }
+
+
+        function displayData1(data1) {
+
+            document.querySelector("#cont2").innerHTML = ""
+
+            data1.map(function (elem, index) {
+
+                if (index == 0) {
+                    return
+                }
+
+
+                let div = document.createElement("div")
+
+
+
+                let min = document.createElement("p")
+                min.innerHTML = "min" + " " + ":" + " " + elem.temp.min + " " + "&#8451"
+
+                let max = document.createElement("p")
+                max.innerHTML = "max" + " " + ":" + " " + elem.temp.max + " " + "&#8451"
+
+                let temp = document.createElement("h3")
+                temp.innerHTML = elem.temp.day + " " + "&#8451"
+
+
+
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                let unixtime = new Date(elem.dt * 1000)
+                let mon = months[unixtime.getMonth()]
+                let date = days[unixtime.getDay()]
+
+                let final = date
+
+
+
+
+                let unixtime2 = new Date(elem.sunrise * 1000)
+                let hours3 = unixtime2.getHours()
+                let minutes3 = unixtime2.getMinutes()
+
+                let sunrise1 = document.createElement("p")
+                sunrise1.innerHTML = "<i class='fa-solid fa-sun'></i> " + "<i class='fa-solid fa-arrow-up-long'></i> " + hours3 + ":" + minutes3
+
+                let unixtime3 = new Date(elem.sunset * 1000)
+                let hours2 = unixtime3.getHours()
+                let minutes2 = unixtime3.getMinutes()
+
+                let sunset1 = document.createElement("p")
+                sunset1.innerHTML = "<i class='fa-solid fa-sun'></i> " + "<i class='fa-solid fa-arrow-down-long'></i> " + hours2 + ":" + minutes2
+
+
+
+
+
+                // let sunrise = document.createElement("p")
+                // sunrise.innerHTML = "Sunrise at" + " " + hours + ":" + minutes
+
+                // let unixtime1 = new Date(data.sys.sunset * 1000)
+                // let hours1 = unixtime1.getHours()
+                // let minutes1 = unixtime1.getMinutes()
+
+                // let sunset = document.createElement("p")
+                // sunset.innerHTML = "Sunset at" + " " + hours1 + ":" + minutes1
+
+
+                // iframe = document.querySelector("iframe")
+                // iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+
+                let div1 = document.createElement("div")
+                let div2 = document.createElement("div")
+                let div3 = document.createElement("div")
+                let div4 = document.createElement("div")
+                let div5 = document.createElement("div")
+                let div6 = document.createElement("div")
+
+                div1.append(temp)
+                div2.append(min, max)
+                // div2.style.display = "flex"
+                div2.style.justifyContent = "space-between"
+
+                // div4.id = "flexd"
+                div3.append(div1)
+
+                div4.append(sunrise1, sunset1)
+                // div4.style.display = "flex"
+                div4.style.justifyContent = "space-between"
+
+                div5.append(final)
+                div.append(div5, div3, div4)
+
+                // div.style.border = "1px blue solid"
+
+
+                div6.append(div)
+                div6.id = "grid1"
+                // console.log('div:', div)
+
+                document.querySelector("#cont2").append(div6)
+
+            })
+
+
+
+
+        }
+
+
+
+
+
+    }
+
+</script>
